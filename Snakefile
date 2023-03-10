@@ -6,7 +6,7 @@ rule decompress:
     output: temp('{file}.vcf')
     shell:
         '''
-        zcat {input} > {output}
+        zcat {input} | sed 's/^chr//' > {output}
         '''
 
 rule prepare:
