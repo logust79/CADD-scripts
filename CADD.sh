@@ -6,6 +6,7 @@ where:
     -h  show this help text
     -o  out tsv.gz file (generated from input file name if not set)
     -g  genome build (supported are GRCh37 and GRCh38 [default: GRCh38])
+    -f  Config location
     -v  CADD version (only v1.6 possible with this set of scripts [default: v1.6])
     -a  include annotation in output
         input vcf of vcf.gz file (required)
@@ -21,10 +22,11 @@ export LC_ALL=C
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
 OUTFILE=""
+CONFIGFOLDER=""
 VERSION="v1.6"
 VERBOSE="-q"
 CORES="1"
-while getopts ':ho:g:v:c:aqp' option; do
+while getopts ':ho:g:v:c:f:aqp' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -36,6 +38,8 @@ while getopts ':ho:g:v:c:aqp' option; do
     v) VERSION=$OPTARG
        ;;
     c) CORES=$OPTARG
+       ;;
+    f) CONFIGFOLDER=$OPTARG
        ;;
     a) ANNOTATION=true
        ;;
@@ -77,7 +81,10 @@ FILEFORMAT=${FILENAME#$NAME\.}
 
 SCRIPT=$(readlink -f "$0")
 export CADD=$(dirname "$SCRIPT")
-
+if [ "$CONFIGFOLDER" == "" ]
+then
+    CONFIGFOLDER=${CADD}/config
+fi
 if [ "$FILEFORMAT" != "vcf" ] && [ "$FILEFORMAT" != "vcf.gz" ]
 then
     echo "Unknown file format $FILEFORMAT. Make sure you provide a *.vcf or *.vcf.gz file."
@@ -104,9 +111,9 @@ fi
 
 if [ "$ANNOTATION" = 'true' ]
 then
-    CONFIG=$CADD/config/config_${GENOMEBUILD}_${VERSION}.yml
+    CONFIG=${CONFIGFOLDER}/config_${GENOMEBUILD}_${VERSION}.yml
 else
-    CONFIG=$CADD/config/config_${GENOMEBUILD}_${VERSION}_noanno.yml
+    CONFIG=${CONFIGFOLDER}/config/config_${GENOMEBUILD}_${VERSION}_noanno.yml
 fi
 
 # Setup temporary folder that is removed reliably on exit and is outside of
