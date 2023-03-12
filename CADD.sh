@@ -113,7 +113,7 @@ if [ "$ANNOTATION" = 'true' ]
 then
     CONFIG=${CONFIGFOLDER}/config_${GENOMEBUILD}_${VERSION}.yml
 else
-    CONFIG=${CONFIGFOLDER}/config/config_${GENOMEBUILD}_${VERSION}_noanno.yml
+    CONFIG=${CONFIGFOLDER}/config_${GENOMEBUILD}_${VERSION}_noanno.yml
 fi
 
 # Setup temporary folder that is removed reliably on exit and is outside of
